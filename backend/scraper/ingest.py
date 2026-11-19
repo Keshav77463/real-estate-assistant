@@ -1,5 +1,5 @@
 """Reads /data/*.jsonl, prioritizes JSON-LD / Next.js data, extracts structured specs, and embeds paragraphs."""
-import json, re, glob, sys
+import json, re, glob, os, sys
 from app.db import conn
 from app.rag import model
 from app.vocab import (
@@ -466,7 +466,8 @@ def iter_jsonl(path):
 def load_pages():
     """Read all jsonl files; one page per (source, canonical path), best-quality row wins."""
     best, skipped = {}, 0
-    for path in sorted(glob.glob("/data/*.jsonl")):
+    data_dir = os.getenv("DATA_DIR", "/data")
+    for path in sorted(glob.glob(os.path.join(data_dir, "*.jsonl"))):
         for p in iter_jsonl(path):
             if is_junk(p):
                 skipped += 1

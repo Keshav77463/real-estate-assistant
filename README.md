@@ -118,6 +118,31 @@ docker compose down
 docker compose up -d --build
 ```
 
+## Deploy to Render
+
+Render deploys the frontend, backend, and database as separate services; it does not run this Docker Compose file as one stack.
+
+1. Push the repository to GitHub. Keep `.env` out of the repository.
+2. Create a Render PostgreSQL database in the same region as the backend. Apply `db/init.sql` to the new database using its SQL console or `psql`.
+3. Create a Render **Docker web service** for the backend from the repository root. Set the Dockerfile path to `backend/Dockerfile`, health-check path to `/health`, and configure:
+   - `DATABASE_URL`: the database's internal connection URL
+   - `CORS_ORIGINS`: the exact public URL of the frontend
+   - `OPENROUTER_API_KEY` or `GROQ_API_KEY`: a provider key
+   - Optional model variables from the environment-variable table
+4. Load the property data once. The backend image includes `data/*.jsonl`. From a machine with Docker, build the image and run the importer against the database's external connection URL:
+
+   ```powershell
+   docker build -f backend/Dockerfile -t realestate-chatbot-backend .
+   $env:DATABASE_URL = "<Render external database URL>"
+   docker run --rm -e DATABASE_URL realestate-chatbot-backend python -m scraper.ingest
+   Remove-Item Env:DATABASE_URL
+   ```
+
+5. Create a Render **Static Site** for the frontend. Set the root directory to `frontend`, build command to `npm ci && npm run build`, and publish directory to `dist`. Set `VITE_API_BASE_URL` to the backend's public URL, then set the backend's `CORS_ORIGINS` to the resulting frontend URL.
+6. Open the frontend URL and test a property search. Keep provider and database credentials in Render environment settings, never in GitHub.
+
+The first backend start downloads the embedding model if it is not already cached. Allow extra startup time and use an instance with enough memory for the model.
+
 ## Environment Variables
 
 | Variable | Required | Description |
@@ -131,6 +156,8 @@ docker compose up -d --build
 | `POSTGRES_PASSWORD` | optional | Default: `app` |
 | `POSTGRES_DB` | optional | Default: `realestate` |
 | `EMBED_MODEL` | optional | Default: `BAAI/bge-small-en-v1.5` |
+| `CORS_ORIGINS` | optional | Comma-separated browser origins; defaults to local development origins |
+| `VITE_API_BASE_URL` | Render frontend | Public URL of the backend; leave unset for the local nginx proxy |
 
 ## Supported Filter Queries
 

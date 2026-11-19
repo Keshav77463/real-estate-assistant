@@ -15,7 +15,9 @@ services:
     restart: unless-stopped
 
   backend:
-    build: ./backend
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
     env_file: .env
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER:-app}:${POSTGRES_PASSWORD:-app}@db:5432/${POSTGRES_DB:-realestate}
@@ -28,7 +30,9 @@ services:
     restart: unless-stopped
 
   ingest:
-    build: ./backend
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
     command: python -m scraper.ingest
     env_file: .env
     environment:

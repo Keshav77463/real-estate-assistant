@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/+$/, "");
 const SUGGESTIONS = [
   "What projects does Dar Global have in Dubai?",
   "Find Wasalt apartments in Jeddah under SAR 400k",
@@ -263,11 +264,14 @@ export default function App() {
   async function send(text) {
     const q = (text ?? input).trim();
     if (!q || loading) return;
-    const history = messages.map((m) => ({ role: m.role, content: m.content }));
+    const history = messages
+      .filter((m) => m.role === "user")
+      .slice(-3)
+      .map((m) => ({ role: m.role, content: m.content }));
     setMessages((m) => [...m, { role: "user", content: q }]);
     setInput(""); setLoading(true);
     try {
-      const res = await fetch("/api/chat", {
+      const res = await fetch(`${API_BASE_URL}/api/chat`, {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: q, history }),
       });
