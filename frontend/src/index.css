@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.answer p { margin: 0.4rem 0; }
+.answer h1, .answer h2, .answer h3 { font-weight: 600; margin: 0.6rem 0 0.3rem; }
+.answer h1 { font-size: 1.05rem; }
+.answer h2 { font-size: 0.95rem; }
+.answer h3 { font-size: 0.875rem; }
+.answer ul { list-style: disc; padding-left: 1.25rem; margin: 0.4rem 0; }
+.answer ol { list-style: decimal; padding-left: 1.25rem; margin: 0.4rem 0; }
+.answer li { margin: 0.15rem 0; }
+.answer strong { font-weight: 600; }
+.answer a { color: #4f46e5; text-decoration: underline; }
+.answer hr { border-color: #e2e8f0; margin: 0.6rem 0; }
+.answer table { border-collapse: collapse; margin: 0.5rem 0; font-size: 0.8rem; display: block; overflow-x: auto; }
+.answer th, .answer td { border: 1px solid #e2e8f0; padding: 0.25rem 0.5rem; text-align: left; }
+.answer th { background: #f8fafc; }
+
+.answer h2 { font-size: 0.95rem; font-weight: 600; color: #1e293b; margin: 0.9rem 0 0.35rem; padding-top: 0.7rem; border-top: 1px solid #e2e8f0; }
+.answer h2:first-child { margin-top: 0; padding-top: 0; border-top: none; }
+.answer li { line-height: 1.5; }
+.answer strong { color: #334155; }
+.answer p + ul { margin-top: 0.2rem; }
